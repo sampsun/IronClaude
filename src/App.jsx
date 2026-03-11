@@ -60,13 +60,6 @@ function best1RM(history) {
   history.forEach(s => { const sets=s.sets?.length>0?s.sets:[{weight:s.weight,reps:s.reps}]; sets.forEach(({weight,reps})=>{ const e=epley1RM(weight,reps); if(e&&(!best||e>best))best=e; }); });
   return best;
 }
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js")
-      .then(() => console.log("Service Worker registered"))
-      .catch(err => console.log("SW failed", err));
-  });
-}
 function getStagnationFlag(history) {
   if (!history||history.length<2) return null;
   const now=new Date(), twa=new Date(now); twa.setDate(now.getDate()-14);
