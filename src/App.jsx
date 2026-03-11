@@ -5,19 +5,6 @@ const DEFAULT_MUSCLE_GROUPS = { Push: ["Chest", "Shoulders", "Triceps", "Upper C
 const DEFAULT_EXERCISES = { Push: ["Bench Press", "Overhead Press", "Incline Dumbbell Press", "Lateral Raises", "Tricep Pushdown", "Chest Fly"], Pull: ["Deadlift", "Barbell Row", "Lat Pulldown", "Cable Row", "Bicep Curl", "Face Pull"], Legs: ["Squat", "Romanian Deadlift", "Leg Press", "Leg Curl", "Calf Raise", "Lunges"] };
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-const [lifts, setLifts] = useState(() => {
-  const saved = localStorage.getItem("lifts")
-  return saved ? JSON.parse(saved) : {}
-};
-
-useEffect(() => {
-  localStorage.setItem("lifts", JSON.stringify(lifts))
-}, [lifts]);
-
-const STORAGE_KEY = "ironclaude_lifts_v1"
-localStorage.getItem(STORAGE_KEY)
-localStorage.setItem(STORAGE_KEY, JSON.stringify(lifts))
-
 const T = {
   bg: "#f5f0e8", bgDeep: "#ede7d9", bgCard: "#faf7f2",
   ink: "#1c1612", inkMid: "#4a3f35", inkFaint: "#7a6e64", inkGhost: "#a89e94",
@@ -72,6 +59,13 @@ function best1RM(history) {
   if (!history?.length) return null; let best=null;
   history.forEach(s => { const sets=s.sets?.length>0?s.sets:[{weight:s.weight,reps:s.reps}]; sets.forEach(({weight,reps})=>{ const e=epley1RM(weight,reps); if(e&&(!best||e>best))best=e; }); });
   return best;
+}
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js")
+      .then(() => console.log("Service Worker registered"))
+      .catch(err => console.log("SW failed", err));
+  });
 }
 function getStagnationFlag(history) {
   if (!history||history.length<2) return null;
